@@ -1,1 +1,7 @@
+.sw[apon]
+.py[oc]
+db.sqlite3
+__pycache__/
+node_modules/
+public/
 dist/
