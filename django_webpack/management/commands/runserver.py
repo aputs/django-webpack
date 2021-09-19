@@ -38,6 +38,12 @@ class Command(BaseCommand):
             "addrport", nargs="?", help="Optional port number, or ipaddr:port"
         )
         parser.add_argument(
+            "--public-root",
+            type=Path,
+            default=Path(settings.BASE_DIR) / "public",
+            help="Set PUBLIC_ROOT directory",
+        )
+        parser.add_argument(
             "--ipv6",
             "-6",
             action="store_true",
@@ -101,18 +107,27 @@ class Command(BaseCommand):
         if not yarn_bin:
             raise CommandError("yarn binary not found.")
 
-        loop = asyncio.get_event_loop()
-        executor = ThreadPoolExecutor(1)
         with tempfile.TemporaryDirectory() as work_dir:
-            wp = Webpack(yarn_bin, Path(work_dir), mode=options["mode"])
+            public_root = os.environ.get("PUBLIC_ROOT", None)
+            if not public_root:
+                public_root = options["public_root"]
+
+            wp = Webpack(
+                yarn_bin,
+                Path(work_dir),
+                document_root=Path(public_root),
+                mode=options["mode"],
+            )
 
             def run_webpack():
                 # TODO detect updated staticfiles list
                 wp.prepare_webpack_root()
                 wp.run_webpack_build(watch=True)
 
-            os.environ.setdefault("PUBLIC_ROOT", str(wp.document_root.resolve()))
+            loop = asyncio.get_event_loop()
+            executor = ThreadPoolExecutor(1)
             loop.run_in_executor(executor, run_webpack)
+            os.environ.setdefault("PUBLIC_ROOT", public_root)
             uvicorn.run(
                 "django_webpack.asgi:app",
                 host=self.addr,
