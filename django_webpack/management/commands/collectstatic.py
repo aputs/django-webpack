@@ -22,12 +22,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--mode",
             type=CompileMode,
-            choices=(
-                CompileMode.DEVELOPMENT.value,
-                CompileMode.PRODUCTION.value,
-                CompileMode.NONE.value,
-            ),
-            default=CompileMode.DEVELOPMENT,
+            default=CompileMode.PRODUCTION,
         )
         parser.add_argument(
             "--yarn-bin",

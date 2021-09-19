@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "django-webpack"
-version = "1.0.0"
+version = "1.0.1"
 description = ""
 authors = ["Allan Ralph Hutalla <ahutalla@gmail.com>"]
 

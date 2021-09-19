@@ -53,11 +53,6 @@ class Command(BaseCommand):
         parser.add_argument(
             "--mode",
             type=CompileMode,
-            choices=(
-                CompileMode.DEVELOPMENT.value,
-                CompileMode.PRODUCTION.value,
-                CompileMode.NONE.value,
-            ),
             default=CompileMode.DEVELOPMENT,
         )
         parser.add_argument(
@@ -127,7 +122,7 @@ class Command(BaseCommand):
             loop = asyncio.get_event_loop()
             executor = ThreadPoolExecutor(1)
             loop.run_in_executor(executor, run_webpack)
-            os.environ.setdefault("PUBLIC_ROOT", public_root)
+            os.environ.setdefault("PUBLIC_ROOT", str(public_root))
             uvicorn.run(
                 "django_webpack.asgi:app",
                 host=self.addr,
