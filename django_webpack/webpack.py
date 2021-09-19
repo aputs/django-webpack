@@ -32,7 +32,7 @@ const { WebpackManifestPlugin } = require("webpack-manifest-plugin");
 
 module.exports = {
   mode: "{{ mode }}",
-  entry: "./dummy.js",
+  entry: {},
   module: {
     rules: [
       { test: /\.js$/, use: "babel-loader" },
@@ -207,10 +207,6 @@ class Webpack:
         context.update(self.extra_context)
         with open(self.webpack_config_file, "w") as cf:
             cf.write(webpack_config.render(**context))
-
-        # TODO entry should be configurable
-        with open(self.work_dir / "dummy.js", "w") as df:
-            df.write("// empty file, since webpack need's an entrypoint")
 
         os.symlink(self.package_json_path, self.work_dir / "package.json")
         os.symlink(self.yarn_lock_path, self.work_dir / "yarn.lock")

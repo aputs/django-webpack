@@ -38,17 +38,17 @@ class Command(BaseCommand):
             "addrport", nargs="?", help="Optional port number, or ipaddr:port"
         )
         parser.add_argument(
-            "--public-root",
-            type=Path,
-            default=Path(settings.BASE_DIR) / "public",
-            help="Set PUBLIC_ROOT directory",
-        )
-        parser.add_argument(
             "--ipv6",
             "-6",
             action="store_true",
             dest="use_ipv6",
             help="Tells Django to use an IPv6 address.",
+        )
+        parser.add_argument(
+            "--public-root",
+            type=Path,
+            default=Path(settings.BASE_DIR) / "public",
+            help="Set PUBLIC_ROOT directory",
         )
         parser.add_argument(
             "--mode",

@@ -1,3 +1,4 @@
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -15,7 +16,8 @@ class Command(BaseCommand):
         parser.add_argument(
             "--public-root",
             type=Path,
-            default=settings.PUBLIC_ROOT,
+            default=Path(settings.BASE_DIR) / "public",
+            help="Set PUBLIC_ROOT directory",
         )
         parser.add_argument(
             "--mode",
@@ -44,11 +46,15 @@ class Command(BaseCommand):
             raise CommandError("yarn binary not found.")
 
         with tempfile.TemporaryDirectory() as work_dir:
+            public_root = os.environ.get("PUBLIC_ROOT", None)
+            if not public_root:
+                public_root = options["public_root"]
+
             wp = Webpack(
                 yarn_bin,
                 Path(work_dir),
+                document_root=Path(public_root),
                 mode=options["mode"],
-                document_root=options["public_root"],
             )
             wp.prepare_webpack_root()
             wp.run_webpack_build(watch=options["watch"])
